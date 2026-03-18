@@ -1,0 +1,41 @@
+services:
+  auth:
+    build:
+      context: .
+      target: final
+    command: ["/app/entrypoints/start.sh"]
+    container_name: auth
+    restart: unless-stopped
+    depends_on:
+      auth_pgdb:
+        condition: service_healthy
+    env_file:
+      - ./.env.example
+    volumes:
+      - .:/app
+    ports:
+      - "8008:8008"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8008" ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+
+  auth_pgdb:
+    image: postgres:16-alpine
+    container_name: auth_pgdb
+    restart: unless-stopped
+    env_file:
+      - ./.env.example
+    ports:
+      - "5432:5432"
+    volumes:
+      - ~/apps/postgres-auth:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U authuser -d authdb" ]
+      interval: 10s
+      timeout: 5s
+      retries: 7
+      start_period: 25s

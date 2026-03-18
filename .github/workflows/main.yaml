@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run flake8
+        uses: py-actions/flake8@v2
+
+      - name: Run black
+        uses: psf/black@stable
+
+      - name: Run isort
+        uses: isort/isort-action@v1
+
+      - name: Install mypy
+        run: pip install mypy
+
+      - name: Run mypy
+        uses: sasanquaneuf/mypy-github-action@releases/v1
+
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Docker Compose
+        uses: ndeloof/install-compose-action@v0.0.1
+      - run: docker-compose --version
+
+      - name: Start Docker Compose
+        run: |
+          docker-compose up --build -d --wait
+
+      - name: Run tests with coverage
+        run: docker-compose exec auth pytest -v
+
+      - name: Stop containers
+        run: docker-compose down
