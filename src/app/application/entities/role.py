@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from uuid import UUID
 
 
@@ -7,3 +7,4 @@ class RoleEntity:
     id: UUID
     name: str
     description: str
+    permissions: list = field(default_factory=list)

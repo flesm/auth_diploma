@@ -43,7 +43,7 @@ class FakeMailConfig(MailConfig):
 
 class FakeConfig(Config):
     class Config:
-        env_file = "/home/young/stajka/auth/.env.test"
+        env_file = ".env.test"
         env_nested_delimiter = "__"
 
     DB: FakeDBConfig

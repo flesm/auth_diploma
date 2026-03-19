@@ -3,6 +3,7 @@ from typing import Any, AsyncGenerator
 
 from fastapi import FastAPI
 
+from src.app.presentation.rest.admin.admin_setup import setup_admin
 from src.app.config import Config
 from src.app.container import Container
 from src.app.presentation.rest.exception_handlers.exception_handlers import (
@@ -16,6 +17,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, Any]:
     container = Container()
     container.config.override(Config())
     container.init_resources()
+
+    engine = container.db.container.db().engine
+
+    setup_admin(app, engine)
+
     container.wire(
         modules=[
             "src.app.presentation.rest.routes.v1.user.register.controllers",
