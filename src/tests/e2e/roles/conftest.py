@@ -7,7 +7,11 @@ from faker import Faker
 from sqlalchemy import insert
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
-from src.app.infra.connection_engines.sqla.models import Role
+from src.app.infra.connection_engines.sqla.models import (
+    Permission,
+    Role,
+    role_permissions,
+)
 
 
 @pytest.fixture
@@ -28,6 +32,40 @@ async def regular_role_id(
                 id=role_id,
                 name=faker.name(),
                 description=faker.random_letter(),
+            )
+        )
+        await session.commit()
+
+    return cast(str, role_id)
+
+
+@pytest_asyncio.fixture
+async def role_with_permission_id(
+    async_session: async_sessionmaker, faker: Faker
+) -> str:
+
+    role_id = uuid4()
+    permission_id = uuid4()
+
+    async with async_session() as session:
+        await session.execute(
+            insert(Role).values(
+                id=role_id,
+                name=faker.name(),
+                description=faker.random_letter(),
+            )
+        )
+        await session.execute(
+            insert(Permission).values(
+                id=permission_id,
+                name="role:test",
+                description=faker.random_letter(),
+            )
+        )
+        await session.execute(
+            insert(role_permissions).values(
+                role_id=role_id,
+                permission_id=permission_id,
             )
         )
         await session.commit()

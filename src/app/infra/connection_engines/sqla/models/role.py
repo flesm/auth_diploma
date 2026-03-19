@@ -29,5 +29,10 @@ class Role(Base):
 
     def to_entity(self) -> RoleEntity:
         return RoleEntity(
-            id=self.id, name=self.name, description=self.description
+            id=self.id,
+            name=self.name,
+            description=self.description,
+            permissions=[
+                permission.to_entity() for permission in self.permissions
+            ],
         )
