@@ -21,6 +21,7 @@ def payload_for_access_token(faker: Faker) -> dict[str, Any]:
         "user_name": faker.first_name(),
         "is_staff": False,
         "email": faker.email(),
+        "role": "intern",
     }
 
 

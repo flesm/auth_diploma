@@ -29,10 +29,13 @@ class GetCurrentUserUseCase:
                 raise UserNotFound()
 
             is_staff = False
+            role_name = None
             if user.role_id:
                 role_obj = await self._rdbms_uow.roles.get_by_id(user.role_id)
-                if role_obj and role_obj.name in ("admin", "superadmin"):
-                    is_staff = True
+                if role_obj:
+                    role_name = role_obj.name
+                    if role_obj.name in ("admin", "superadmin"):
+                        is_staff = True
 
         return CurrentUserResponseDto(
             id=user.id,
@@ -42,4 +45,5 @@ class GetCurrentUserUseCase:
             is_active=user.is_active,
             is_verified=user.is_verified,
             is_staff=is_staff,
+            role=role_name or user_from_token.get("role"),
         )

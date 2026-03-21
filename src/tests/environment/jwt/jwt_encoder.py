@@ -56,6 +56,7 @@ class FakeJwtTokenEncoder(IJwtTokenEncoder):
         username: str | None,
         is_staff: bool,
         email: str | None,
+        role: str,
     ) -> str:
         return self._encode(
             secret_key=self._access_secret_key,
@@ -64,6 +65,7 @@ class FakeJwtTokenEncoder(IJwtTokenEncoder):
                 "username": username,
                 "is_staff": is_staff,
                 "email": email,
+                "role": role,
             },
             expire_minutes=self._access_expire_minutes,
         )

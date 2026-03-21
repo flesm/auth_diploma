@@ -32,16 +32,20 @@ class LoginUseCase:
                 raise InvalidCredentialsException()
 
             is_staff = False
+            role_name = None
             if user.role_id:
                 role_obj = await self._rdbms_uow.roles.get_by_id(user.role_id)
-                if role_obj and role_obj.name in ("admin", "superadmin"):
-                    is_staff = True
+                if role_obj:
+                    role_name = role_obj.name
+                    if role_obj.name in ("admin", "superadmin"):
+                        is_staff = True
 
         access_token = self._jwt_encoder.encode_access_token(
             user_id=str(user.id),
             username=user.first_name,
             is_staff=is_staff,
             email=user.email,
+            role=role_name or "intern",
         )
         refresh_token = self._jwt_encoder.encode_refresh_token(
             user_id=str(user.id)

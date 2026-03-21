@@ -58,7 +58,12 @@ class JwtTokenEncoder(IJwtTokenEncoder):
         )
 
     def encode_access_token(
-        self, user_id: str, username: str, is_staff: bool, email: str
+        self,
+        user_id: str,
+        username: str,
+        is_staff: bool,
+        email: str,
+        role: str,
     ) -> str:
         return self._encode(
             secret_key=self._access_secret_key,
@@ -67,6 +72,7 @@ class JwtTokenEncoder(IJwtTokenEncoder):
                 "username": username,
                 "is_staff": is_staff,
                 "email": email,
+                "role": role,
             },
             expire_minutes=self._access_expire_minutes,
         )

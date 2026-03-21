@@ -24,7 +24,12 @@ class IJwtTokenEncoder(ABC):
 
     @abstractmethod
     def encode_access_token(
-        self, user_id: str, username: str, is_staff: bool, email: str
+        self,
+        user_id: str,
+        username: str,
+        is_staff: bool,
+        email: str,
+        role: str,
     ) -> str:
         pass
 

@@ -11,3 +11,4 @@ class CurrentUserResponseDto:
     is_active: bool
     is_verified: bool
     is_staff: bool
+    role: str | None
