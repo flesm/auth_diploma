@@ -31,6 +31,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, Any]:
             "src.app.presentation.rest.routes.v1.user.verify_email."
             "controllers",
             "src.app.presentation.rest.routes.v1.user.auth.controllers",
+            "src.app.presentation.rest.routes.v1.user.profile.controllers",
             "src.app.presentation.rest.routes.v1.permission.get.controllers",
             "src.app.presentation.rest.routes.v1.permission.create."
             "controllers",
