@@ -14,37 +14,40 @@ from src.app.application.use_cases.permissions.update.use_case import (
 )
 
 
-async def test_update_permission_success(
-    update_permission_uc: UpdatePermissionUseCase,
-    permission_dto: UpdatePermissionRequestDto,
-    permission_id: UUID,
-) -> None:
+class TestUpdate:
 
-    updated_permission = await update_permission_uc(
-        permission_id=permission_id, dto=permission_dto
-    )
+    async def test_case_1(
+        self,
+        update_permission_uc: UpdatePermissionUseCase,
+        permission_dto: UpdatePermissionRequestDto,
+        permission_id: UUID,
+    ) -> None:
 
-    assert updated_permission.id == permission_id
-    assert updated_permission.name == permission_dto.name
+            updated_permission = await update_permission_uc(
+                permission_id=permission_id, dto=permission_dto
+            )
 
+            assert updated_permission.id == permission_id
+            assert updated_permission.name == permission_dto.name
 
-async def test_update_permission_not_found(
-    update_permission_uc: UpdatePermissionUseCase,
-    permission_dto: UpdatePermissionRequestDto,
-    foreign_permission_id: UUID,
-) -> None:
-    with pytest.raises(PermissionNotFoundException):
-        await update_permission_uc(
-            permission_id=foreign_permission_id, dto=permission_dto
-        )
+    async def test_case_2(
+        self,
+        update_permission_uc: UpdatePermissionUseCase,
+        permission_dto: UpdatePermissionRequestDto,
+        foreign_permission_id: UUID,
+    ) -> None:
+            with pytest.raises(PermissionNotFoundException):
+                await update_permission_uc(
+                    permission_id=foreign_permission_id, dto=permission_dto
+                )
 
-
-async def test_update_permission_already_exists(
-    update_permission_uc: UpdatePermissionUseCase,
-    existing_permission_dto: UpdatePermissionRequestDto,
-    another_permission_id: UUID,
-) -> None:
-    with pytest.raises(PermissionAlreadyExistException):
-        await update_permission_uc(
-            permission_id=another_permission_id, dto=existing_permission_dto
-        )
+    async def test_case_3(
+        self,
+        update_permission_uc: UpdatePermissionUseCase,
+        existing_permission_dto: UpdatePermissionRequestDto,
+        another_permission_id: UUID,
+    ) -> None:
+            with pytest.raises(PermissionAlreadyExistException):
+                await update_permission_uc(
+                    permission_id=another_permission_id, dto=existing_permission_dto
+                )

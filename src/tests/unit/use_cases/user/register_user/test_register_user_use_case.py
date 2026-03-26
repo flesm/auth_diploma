@@ -13,37 +13,40 @@ from src.tests.environment.email.email_sender import FakeFMEmailSender
 from src.tests.environment.uow.unit_of_work import FakeSQLAUnitOfWork
 
 
-async def test_register_regular_user_success(
-    register_regular_user_dto: RegisterUserRequestDTO,
-    register_user_uc: RegisterUserUseCase,
-    fake_uow: FakeSQLAUnitOfWork,
-    fake_email_sender: FakeFMEmailSender,
-) -> None:
-    result = await register_user_uc.create_user(dto=register_regular_user_dto)
+class TestRegisterUserUseCase:
 
-    assert result.email == register_regular_user_dto.email
-    assert len(fake_uow.users._users) == 1
+    async def test_case_1(
+        self,
+        register_regular_user_dto: RegisterUserRequestDTO,
+        register_user_uc: RegisterUserUseCase,
+        fake_uow: FakeSQLAUnitOfWork,
+        fake_email_sender: FakeFMEmailSender,
+    ) -> None:
+            result = await register_user_uc.create_user(dto=register_regular_user_dto)
 
-    await register_user_uc.send_verification_email(
-        email=register_regular_user_dto.email
-    )
+            assert result.email == register_regular_user_dto.email
+            assert len(fake_uow.users._users) == 1
 
-    assert len(fake_email_sender.sent_emails) == 1
+            await register_user_uc.send_verification_email(
+                email=register_regular_user_dto.email
+            )
 
-    email_type, email, token = fake_email_sender.sent_emails[0]
-    assert email_type == 'verify'
-    assert email == register_regular_user_dto.email
+            assert len(fake_email_sender.sent_emails) == 1
 
+            email_type, email, token = fake_email_sender.sent_emails[0]
+            assert email_type == 'verify'
+            assert email == register_regular_user_dto.email
 
-async def test_register_regular_user_email_already_registered_success(
-    register_regular_user_dto: RegisterUserRequestDTO,
-    register_user_uc: RegisterUserUseCase,
-    fake_uow: FakeSQLAUnitOfWork,
-    fake_email_sender: FakeFMEmailSender,
-) -> None:
-    await register_user_uc.create_user(dto=register_regular_user_dto)
+    async def test_case_2(
+        self,
+        register_regular_user_dto: RegisterUserRequestDTO,
+        register_user_uc: RegisterUserUseCase,
+        fake_uow: FakeSQLAUnitOfWork,
+        fake_email_sender: FakeFMEmailSender,
+    ) -> None:
+            await register_user_uc.create_user(dto=register_regular_user_dto)
 
-    with pytest.raises(EmailAlreadyRegisteredException):
-        await register_user_uc.create_user(dto=register_regular_user_dto)
+            with pytest.raises(EmailAlreadyRegisteredException):
+                await register_user_uc.create_user(dto=register_regular_user_dto)
 
-    assert len(fake_uow.users._users) == 1
+            assert len(fake_uow.users._users) == 1

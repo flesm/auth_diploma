@@ -7,14 +7,17 @@ from src.app.application.use_cases.users.register.dto import (
 from src.tests.environment.uow.unit_of_work import FakeSQLAUnitOfWork
 
 
-async def test_forget_password_regular_user_success(
-    forget_password_uc: ForgetPasswordUseCase,
-    fake_uow: FakeSQLAUnitOfWork,
-    register_regular_user_dto: RegisterUserRequestDTO,
-) -> None:
+class TestForgetPasswordUseCase:
 
-    user = await fake_uow.users.create(register_regular_user_dto)
+    async def test_case_1(
+        self,
+        forget_password_uc: ForgetPasswordUseCase,
+        fake_uow: FakeSQLAUnitOfWork,
+        register_regular_user_dto: RegisterUserRequestDTO,
+    ) -> None:
 
-    result = await forget_password_uc(user.email)
+            user = await fake_uow.users.create(register_regular_user_dto)
 
-    assert result == "Successfuly sent"
+            result = await forget_password_uc(user.email)
+
+            assert result == "Successfuly sent"
